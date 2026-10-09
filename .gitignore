@@ -2,6 +2,11 @@
 bin/
 obj/
 
+# Local database
+*.db
+*.db-shm
+*.db-wal
+
 # Angular
 node_modules/
 dist/
