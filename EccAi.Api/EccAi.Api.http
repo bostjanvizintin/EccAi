@@ -1,6 +1,48 @@
-@EccAi.Api_HostAddress = http://localhost:5159
+@EccAi.Api_HostAddress = http://localhost:5000
 
-GET {{EccAi.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### Login (demo user is seeded automatically)
+POST {{EccAi.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
 
-###
+{ "email": "demo@eccai.local", "name": "Demo User" }
+
+### Use the token from login response
+@token = put-token-here
+
+### Dashboard
+GET {{EccAi.Api_HostAddress}}/api/dashboard
+Authorization: Bearer {{token}}
+
+### Devices
+GET {{EccAi.Api_HostAddress}}/api/devices
+Authorization: Bearer {{token}}
+
+### Create pairing code
+POST {{EccAi.Api_HostAddress}}/api/pairing-codes
+Authorization: Bearer {{token}}
+
+### Pair a microcontroller (run within 30 min of creating a code)
+@pairingCode = PUT-CODE-HERE
+POST {{EccAi.Api_HostAddress}}/api/device/pair
+Content-Type: application/json
+
+{ "code": "{{pairingCode}}", "hardwareId": "ESP32-TEST", "name": "Test Device" }
+
+### Device config (device auth)
+@deviceApiKey = put-device-key-here
+GET {{EccAi.Api_HostAddress}}/api/device/config
+X-Api-Key: {{deviceApiKey}}
+
+### Ingest measurements
+POST {{EccAi.Api_HostAddress}}/api/device/measurements
+X-Api-Key: {{deviceApiKey}}
+Content-Type: application/json
+
+{ "readings": [ { "key": "ch1", "value": 14.2, "timestamp": "2026-01-01T12:00:00Z" } ] }
+
+### Ingest device error
+POST {{EccAi.Api_HostAddress}}/api/device/errors
+X-Api-Key: {{deviceApiKey}}
+Content-Type: application/json
+
+{ "code": "SENSOR_TIMEOUT", "message": "Channel 1 not responding", "severity": "warning" }
