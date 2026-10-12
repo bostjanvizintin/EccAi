@@ -16,9 +16,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.12" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>
 
-  <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish">
+  <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish" Condition="'$(SkipFrontend)' != 'true'">
     <Message Importance="high" Text="Building Angular app ($(SpaRoot))..." />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm ci" Condition="!Exists('$(SpaRoot)/node_modules')" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
