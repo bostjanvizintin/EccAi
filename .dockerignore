@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/.angular/
+.git/
+.vscode/
+.idea/
+*.db
+*.db-shm
+*.db-wal

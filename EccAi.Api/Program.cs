@@ -5,8 +5,21 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+var connectionString = builder.Configuration.GetConnectionString("Default")
+    ?? builder.Configuration.GetConnectionString("Postgres")
+    ?? "Data Source=eccai.db";
+
 builder.Services.AddDbContext<EccAiDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("Default") ?? "Data Source=eccai.db"));
+{
+    if (connectionString.Contains("Host=") || connectionString.Contains("Server=") || connectionString.Contains("Username=") || connectionString.Contains("Password=") || connectionString.Contains("Database="))
+    {
+        options.UseNpgsql(connectionString);
+    }
+    else
+    {
+        options.UseSqlite(connectionString);
+    }
+});
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RuleEngine>();
 
